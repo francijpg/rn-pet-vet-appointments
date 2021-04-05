@@ -13,11 +13,7 @@ import Appointment from './components/Appointment';
 import Form from './components/Form';
 
 const App = () => {
-  const [appointments, setAppointments] = useState([
-    // {id: '1', patient: 'Mininin', owner: 'Francy', symptom: 'da besitos'},
-    // {id: '2', patient: 'Minami', owner: 'Francy', symptom: 'da besitos'},
-    // {id: '3', patient: 'Chochi', owner: 'Francy', symptom: 'da muchos besitos'},
-  ]);
+  const [appointments, setAppointments] = useState([]);
   const [showForm, setShowForm] = useState(false);
 
   const deletePatient = id => {
