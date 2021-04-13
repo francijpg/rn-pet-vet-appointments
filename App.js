@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Keyboard,
@@ -11,14 +11,30 @@ import {
 } from 'react-native';
 import Appointment from './components/Appointment';
 import Form from './components/Form';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
   const [appointments, setAppointments] = useState([]);
   const [showForm, setShowForm] = useState(false);
 
+  useEffect(() => {
+    const getLocalStorageAppointments = async () => {
+      try {
+        const apmtLC = await AsyncStorage.getItem('petAppointment');
+        if (apmtLC) {
+          setAppointments(JSON.parse(apmtLC));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getLocalStorageAppointments();
+  }, []);
+
   const deletePatient = id => {
     const filteredAppointments = appointments.filter(apmt => apmt.id !== id);
     setAppointments(filteredAppointments);
+    saveAppointmentsLocalStorage(JSON.stringify(filteredAppointments));
   };
 
   const showAppointmentForm = () => {
@@ -27,6 +43,14 @@ const App = () => {
 
   const closeKeyboard = () => {
     Keyboard.dismiss();
+  };
+
+  const saveAppointmentsLocalStorage = async appointmentsJSON => {
+    try {
+      await AsyncStorage.setItem('petAppointment', appointmentsJSON);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -54,6 +78,7 @@ const App = () => {
                 appointments={appointments}
                 setAppointments={setAppointments}
                 setShowForm={setShowForm}
+                saveAppointmentsLocalStorage={saveAppointmentsLocalStorage}
               />
             </>
           ) : (
